@@ -50,8 +50,9 @@ class AssignsController < ApplicationController
 
   def owner_current_user_authority
     assign = Assign.find(params[:id])
-    if assign.user == assign.team.owner || assign.user.id == current_user.id
+    if current_user == assign.team.owner || assign.user.id == current_user.id
     else
+      binding.pry
       redirect_to team_url(params[:team_id]), notice: "リーダー以外はこの操作は許可されていません。"
     end
   end
