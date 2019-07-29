@@ -1,5 +1,6 @@
 class AssignsController < ApplicationController
   before_action :authenticate_user!
+  before_action :owner_current_user_authority, only: [:destroy]
 
   def create
     team = Team.friendly.find(params[:team_id])
@@ -45,5 +46,13 @@ class AssignsController < ApplicationController
   def set_next_team(assign, assigned_user)
     another_team = Assign.find_by(user_id: assigned_user.id).team
     change_keep_team(assigned_user, another_team) if assigned_user.keep_team_id == assign.team_id
+  end
+
+  def owner_current_user_authority
+    assign = Assign.find(params[:id])
+    if current_user == assign.team.owner || assign.user.id == current_user.id
+    else
+      redirect_to team_url(params[:team_id]), notice: "リーダー以外はこの操作は許可されていません。"
+    end
   end
 end
