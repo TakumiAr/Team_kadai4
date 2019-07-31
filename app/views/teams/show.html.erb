@@ -41,12 +41,14 @@
               <table class="table">
                 <tbody>
                   <% @team.assigns.each do |assign| %>
-                      <tr>
+                    <tr>
                       <td><%= image_tag 'default.jpg', size: '40x40' %></td>
                       <td><%= assign.user.email %></td>
                       <% if current_user == assign.team.owner || assign.user.id == current_user.id %>
                         <td><%= link_to '削除', team_assign_path(@team, assign), method: :delete, class: 'btn btn-sm btn-danger' %></td>
-                      <% else %>
+                      <% end %>
+                      <% if current_user == assign.team.owner && assign.user.id != assign.team.owner_id %>
+                        <td><%= link_to '権限移動', owner_change_team_assign_path(@team, assign.user_id, @team.owner_id), class: 'btn btn-sm btn-default' %></td>
                       <% end %>
                     </tr>
                   <% end %>
