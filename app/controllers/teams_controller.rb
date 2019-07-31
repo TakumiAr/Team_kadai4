@@ -48,6 +48,12 @@ class TeamsController < ApplicationController
     @team = current_user.keep_team_id ? Team.find(current_user.keep_team_id) : current_user.teams.first
   end
 
+  def owner_change
+    @team = Team.find_by(name: params[:team_id])
+    @team.update(owner_id: params[:id])
+    redirect_to teams_url(params[:team_id]), notice: '権限移動の実装中〜'
+  end
+
   private
 
   def set_team
