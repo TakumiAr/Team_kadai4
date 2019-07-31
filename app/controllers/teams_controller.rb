@@ -1,7 +1,7 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_team, only: %i[show edit update destroy]
-  before_action :owner_authority, only: [:edit]
+  before_action :owner_authority, only: [:edit, :owner_change]
 
   def index
     @teams = Team.all
@@ -51,7 +51,7 @@ class TeamsController < ApplicationController
   def owner_change
     @team = Team.find_by(name: params[:team_id])
     @team.update(owner_id: params[:id])
-    redirect_to teams_url(params[:team_id]), notice: '権限移動の実装中〜'
+    redirect_to team_url(params[:team_id]), notice: '権限を移動しました！'
   end
 
   private
@@ -65,6 +65,7 @@ class TeamsController < ApplicationController
   end
 
   def owner_authority
+    @team = Team.find_by(name: params[:team_id])
     if current_user == @team.owner
     else
       redirect_to @team, notice: "リーダー以外はこの操作は許可されていません。"
